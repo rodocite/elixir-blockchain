@@ -59,3 +59,25 @@ defmodule Blockchain do
     |> Base.encode16
   end
 end
+
+# Blockchain.start_link()
+# Blockchain.new_block()
+# Blockchain.new_transaction(%{
+#   recipient: "Rodo",
+#   sender: "Su",
+#   amount: 1
+# })
+# Blockchain.new_block()
+# Blockchain.new_block()
+# Blockchain.new_transaction(%{
+#   recipient: "Su",
+#   sender: "Rodo",
+#   amount: 10
+# })
+# Blockchain.new_block()
+# Blockchain.new_transaction(%{
+#   recipient: "Serra",
+#   sender: "Molly",
+#   amount: 1
+# })
+# Blockchain.new_block()
