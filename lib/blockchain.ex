@@ -16,7 +16,7 @@ defmodule Blockchain do
   end
 
   def new_block(previous_hash \\ nil) do
-    current_state = Agent.get(__MODULE__, fn state -> state end)
+    current_state = Agent.get(__MODULE__, &(&1))
     chain = current_state[:chain]
     last_index = length(chain)
     previous_block = Enum.fetch(chain, 0)
