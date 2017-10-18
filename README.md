@@ -1,5 +1,10 @@
 Elixir + Blockchains = Fun
 
+TODO
+ - Proof of work (difficulty?) algo
+ - Why don't the transactions make sense?
+ - API so we can mine it
+
 Genesis Block
 ```
 {
