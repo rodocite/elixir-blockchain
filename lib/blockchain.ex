@@ -24,10 +24,10 @@ defmodule Blockchain do
     IO.inspect(current_state)
 
     block = %{
-        index: last_index + 1,
-        timestamp: Time.utc_now,
-        transactions: current_state.current_transactions,
-        previous_hash: previous_hash || hash(previous_block)
+      index: last_index + 1,
+      timestamp: Time.utc_now,
+      transactions: current_state.current_transactions,
+      previous_hash: previous_hash || hash(previous_block)
     }
 
     __MODULE__ |>
@@ -39,22 +39,17 @@ defmodule Blockchain do
     )
   end
 
-  def new_transaction(record) do
-    record |>
-    case do
-      record ->
-        __MODULE__ |>
-        Agent.update(
-          fn blockchain ->
-            current_transactions = blockchain[:current_transactions]
-            %{blockchain | current_transactions: [] ++ current_transactions ++ [record]}
-          end
-        )
-    end
+  def new_transaction(transaction) do
+    __MODULE__ |>
+    Agent.update(
+      fn blockchain ->
+        current_transactions = blockchain[:current_transactions]
+        %{blockchain | current_transactions: [] ++ current_transactions ++ [transaction]}
+      end
+    )
   end
 
   def hash({:ok, block}) do
-    Agent.get(__MODULE__, fn state -> IO.inspect(state)end)
     :crypto.hmac(:sha256, "so secure, bro", Poison.encode!(block))
     |> Base.encode16
   end
