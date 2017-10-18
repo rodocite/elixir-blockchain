@@ -18,13 +18,10 @@ defmodule Blockchain do
   def new_block(previous_hash \\ nil) do
     current_state = Agent.get(__MODULE__, &(&1))
     chain = current_state[:chain]
-    last_index = length(chain)
-    previous_block = Enum.fetch(chain, 0)
-
-    IO.inspect(Poison.encode!(current_state))
+    previous_block = List.last(chain)
 
     block = %{
-      index: last_index + 1,
+      index: length(chain) + 1,
       timestamp: Time.utc_now,
       transactions: current_state.current_transactions,
       previous_hash: previous_hash || hash(previous_block)
@@ -37,6 +34,7 @@ defmodule Blockchain do
         %{blockchain | chain: [] ++ chain ++ [block]}
       end
     )
+    IO.puts Poison.encode!(current_state)
   end
 
   def new_transaction(transaction) do
@@ -49,20 +47,18 @@ defmodule Blockchain do
     )
   end
 
-  def hash({:ok, block}) do
-    :crypto.hmac(:sha256, "so secure, bro", Poison.encode!(block))
-    |> Base.encode16
+  def hash(block) do
+    :crypto.hmac(:sha256, "so fsecure, bro", Poison.encode!(block))
+    |> Base.encode64
   end
 end
 
 # Blockchain.start_link()
-# Blockchain.new_block()
 # Blockchain.new_transaction(%{
 #   recipient: "Rodo",
 #   sender: "Su",
 #   amount: 1
 # })
-# Blockchain.new_block()
 # Blockchain.new_block()
 # Blockchain.new_transaction(%{
 #   recipient: "Su",
