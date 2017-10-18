@@ -21,7 +21,7 @@ defmodule Blockchain do
     last_index = length(chain)
     previous_block = Enum.fetch(chain, 0)
 
-    IO.inspect(current_state)
+    IO.inspect(Poison.encode!(current_state))
 
     block = %{
       index: last_index + 1,
