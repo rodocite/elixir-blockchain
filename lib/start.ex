@@ -1,8 +1,8 @@
 defmodule Start do
-  import Blockchain
+  use Application
 
   def start(_, _) do
-    IO.puts("starting server - localhost:4000")
     Blockchain.start_link
+    Plug.Adapters.Cowboy.http(Router, [])
   end
 end

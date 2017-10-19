@@ -1,12 +1,8 @@
 defmodule Blockchain do
-  use Plug.Router
-  plug :match
-  plug :dispatch
-
   Module.register_attribute __MODULE__,
     :node_id, accumulate: false, persist: true
 
-  @node_id UUID.uuid1
+  @node_id UUID.uuid4(:hex)
 
   def start_link do
     blockchain = %{
@@ -17,7 +13,10 @@ defmodule Blockchain do
 
     Agent.start_link(fn -> blockchain end, name: __MODULE__)
     new_block(100, 0)
-    Plug.Adapters.Cowboy.http(__MODULE__, [])
+  end
+
+  def index do
+    Agent.get(__MODULE__, &(&1))
   end
 
   def new_block(proof, previous_hash) do
@@ -55,7 +54,7 @@ defmodule Blockchain do
   end
 
   def mine do
-    current_state = get()
+    current_state = index()
     chain = current_state[:chain]
     current_transactions = current_state[:current_transactions]
     last_block = current_state[:last_block]
@@ -72,14 +71,6 @@ defmodule Blockchain do
     )
 
     new_block(proof, nil)
-  end
-
-  def check do
-    IO.inspect get()
-  end
-
-  defp get do
-    Agent.get(__MODULE__, &(&1))
   end
 
   defp proof_of_work(last_proof) do
@@ -103,19 +94,5 @@ defmodule Blockchain do
   defp hash(block) do
     :crypto.hash(:sha256, Poison.encode!(block))
     |> Base.encode16
-  end
-
-  get "/" do
-    response = Poison.encode!(get()[:chain])
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, response)
-  end
-
-  get "/mine" do
-    response = Poison.encode!(mine)
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, response)
   end
 end
