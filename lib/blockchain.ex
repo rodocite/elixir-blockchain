@@ -71,7 +71,7 @@ defmodule Blockchain do
 
     guess
     |> case do
-      "0000" -> {:ok, proof}
+      "0000" -> proof
       _ -> work(last_proof, proof + 1)
     end
   end
