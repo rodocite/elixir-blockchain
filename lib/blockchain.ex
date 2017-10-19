@@ -54,12 +54,36 @@ defmodule Blockchain do
     )
   end
 
-  def proof_of_work(last_proof) do
-    work(last_proof, 0)
+  def mine do
+    current_state = get()
+    chain = current_state[:chain]
+    current_transactions = current_state[:current_transactions]
+    last_block = current_state[:last_block]
+    last_proof = last_block[:proof]
+    previous_hash = last_block[:previous_hash]
+    proof = proof_of_work(last_proof)
+
+    new_transaction(
+      %{
+        sender: "0",
+        recipient: @node_id,
+        amount: 1
+      }
+    )
+
+    new_block(proof, nil)
   end
 
   def check do
-    IO.inspect Agent.get(__MODULE__, &(&1))
+    IO.inspect get()
+  end
+
+  defp get do
+    Agent.get(__MODULE__, &(&1))
+  end
+
+  defp proof_of_work(last_proof) do
+    work(last_proof, 0)
   end
 
   defp work(last_proof, proof) do
@@ -79,5 +103,19 @@ defmodule Blockchain do
   defp hash(block) do
     :crypto.hash(:sha256, Poison.encode!(block))
     |> Base.encode16
+  end
+
+  get "/" do
+    response = Poison.encode!(get()[:chain])
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, response)
+  end
+
+  get "/mine" do
+    response = Poison.encode!(mine)
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, response)
   end
 end
