@@ -1,4 +1,13 @@
 defmodule Blockchain do
+  use Plug.Router
+  plug :match
+  plug :dispatch
+
+  Module.register_attribute __MODULE__,
+    :node_id, accumulate: false, persist: true
+
+  @node_id UUID.uuid1
+
   def start_link do
     blockchain = %{
       chain: [],
