@@ -34,7 +34,6 @@ defmodule Blockchain do
         %{blockchain | chain: [] ++ chain ++ [block]}
       end
     )
-    IO.puts Poison.encode!(current_state)
   end
 
   def new_transaction(transaction) do
