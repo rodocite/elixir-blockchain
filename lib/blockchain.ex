@@ -11,14 +11,16 @@ defmodule Blockchain do
   def start_link do
     blockchain = %{
       chain: [],
-      current_transactions: []
+      current_transactions: [],
+      last_block: nil
     }
 
     Agent.start_link(fn -> blockchain end, name: __MODULE__)
-    new_block(1, 100)
+    new_block(100, 0)
+    Plug.Adapters.Cowboy.http(__MODULE__, [])
   end
 
-  def new_block(previous_hash \\ nil, proof=100) do
+  def new_block(proof, previous_hash) do
     current_state = Agent.get(__MODULE__, &(&1))
     chain = current_state[:chain]
     previous_block = List.last(chain)
@@ -35,9 +37,11 @@ defmodule Blockchain do
     Agent.update(
       fn blockchain ->
         chain = blockchain[:chain]
-        %{blockchain | chain: [] ++ chain ++ [block]}
+        %{blockchain | chain: [] ++ chain ++ [block], last_block: block}
       end
     )
+
+    block
   end
 
   def new_transaction(transaction) do
