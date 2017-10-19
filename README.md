@@ -5,7 +5,7 @@ TODO
   - consensus checking
   - add node to node tansactions
   - idiomatic Elixir
-  - read up in uuids
+  - read up in wallet addresses - https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
   - read up on plug
 
 To Try - `Elixir 1.5` `Erlang 20`
