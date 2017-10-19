@@ -15,6 +15,10 @@ defmodule Blockchain.Mixfile do
   end
 
   defp deps do
-    [{:poison, "~> 3.1"}]
+    [
+      {:poison, "~> 3.1"},
+      {:cowboy, "~> 1.0"},
+      {:plug, "~> 1.0"}
+    ]
   end
 end
