@@ -71,3 +71,6 @@ end
 #   amount: 1
 # })
 # Blockchain.new_block()
+  def check do
+    IO.inspect Agent.get(__MODULE__, &(&1))
+  end
