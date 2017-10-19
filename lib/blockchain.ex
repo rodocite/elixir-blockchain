@@ -89,13 +89,13 @@ defmodule Blockchain do
   defp work(last_proof, proof) do
     binary_guess = Integer.to_string(last_proof) <> Integer.to_string(proof) <> <<0>>
 
-    <<guess::binary-size(4), _::binary>> =
+    <<guess::binary-size(5), _::binary>> =
       :crypto.hash(:sha, binary_guess)
       |> Base.encode16
 
     guess
     |> case do
-      "0000" -> proof
+      "00000" -> proof
       _ -> work(last_proof, proof + 1)
     end
   end
