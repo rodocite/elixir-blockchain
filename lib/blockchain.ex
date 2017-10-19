@@ -15,13 +15,14 @@ defmodule Blockchain do
     Agent.start_link(fn -> genesis_block end, name: __MODULE__)
   end
 
-  def new_block(previous_hash \\ nil) do
+  def new_block(previous_hash \\ nil, proof=100) do
     current_state = Agent.get(__MODULE__, &(&1))
     chain = current_state[:chain]
     previous_block = List.last(chain)
 
     block = %{
       index: length(chain) + 1,
+      proof: proof,
       timestamp: Time.utc_now,
       transactions: current_state.current_transactions,
       previous_hash: previous_hash || hash(previous_block)
@@ -46,31 +47,30 @@ defmodule Blockchain do
     )
   end
 
-  def hash(block) do
-    :crypto.hmac(:sha256, "so fsecure, bro", Poison.encode!(block))
-    |> Base.encode64
+  def proof_of_work(last_proof) do
+    work(last_proof, 0)
   end
-end
 
-# Blockchain.start_link()
-# Blockchain.new_transaction(%{
-#   recipient: "Rodo",
-#   sender: "Su",
-#   amount: 1
-# })
-# Blockchain.new_block()
-# Blockchain.new_transaction(%{
-#   recipient: "Su",
-#   sender: "Rodo",
-#   amount: 10
-# })
-# Blockchain.new_block()
-# Blockchain.new_transaction(%{
-#   recipient: "Serra",
-#   sender: "Molly",
-#   amount: 1
-# })
-# Blockchain.new_block()
   def check do
     IO.inspect Agent.get(__MODULE__, &(&1))
   end
+
+  defp work(last_proof, proof) do
+    binary_guess = Integer.to_string(last_proof) <> Integer.to_string(proof) <> <<0>>
+
+    <<guess::binary-size(4), _::binary>> =
+      :crypto.hash(:sha, binary_guess)
+      |> Base.encode16
+
+    guess
+    |> case do
+      "0000" -> {:ok, proof}
+      _ -> work(last_proof, proof + 1)
+    end
+  end
+
+  defp hash(block) do
+    :crypto.hash(:sha256, Poison.encode!(block))
+    |> Base.encode16
+  end
+end
