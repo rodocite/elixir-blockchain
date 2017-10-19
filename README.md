@@ -8,7 +8,7 @@ TODO
   - read up in uuids
   - read up on plug
 
-To Try
+To Try - `Elixir 1.5` `Erlang 20`
 ```
 mix deps.get
 mix run --no-halt
