@@ -1,18 +1,12 @@
 defmodule Blockchain do
   def start_link do
-    genesis_block = %{
-      chain: [
-        %{
-          index: 1,
-          previous_hash: 1,
-          timestamp: ~T[13:07:22.145373],
-          transactions: []
-        }
-      ],
+    blockchain = %{
+      chain: [],
       current_transactions: []
     }
 
-    Agent.start_link(fn -> genesis_block end, name: __MODULE__)
+    Agent.start_link(fn -> blockchain end, name: __MODULE__)
+    new_block(1, 100)
   end
 
   def new_block(previous_hash \\ nil, proof=100) do
