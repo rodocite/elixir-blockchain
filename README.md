@@ -8,6 +8,14 @@ TODO
   - read up in uuids
   - read up on plug
 
+To Try
+```
+mix deps.get
+mix run --no-halt
+localhost:4000/
+localhost:4000/mine
+```
+
 Block
 ```
 {
