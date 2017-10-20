@@ -17,6 +17,12 @@ defmodule Router do
     |> send_resp(200, response)
   end
 
+  # post "/register-nodes" do
+  # end
+
+  # get "/resolve-nodes" do
+  # end
+
   match _ do
     conn
     |> send_resp(404, "404")

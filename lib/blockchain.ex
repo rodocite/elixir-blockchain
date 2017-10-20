@@ -73,6 +73,15 @@ defmodule Blockchain do
     new_block(proof, nil)
   end
 
+  defp validate_blockchain(chain) do
+    # validate a chain from a different node
+  end
+
+  defp consensus do
+    # reach consensus on which valid chain should be the model
+    # longest ledger in the network wins
+  end
+
   defp proof_of_work(last_proof) do
     work(last_proof, 0)
   end
