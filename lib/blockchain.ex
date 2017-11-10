@@ -16,7 +16,7 @@ defmodule Blockchain do
   end
 
   def index do
-    Agent.get(__MODULE__, &(&1))
+    get_chain()
   end
 
   def new_block(proof, previous_hash) do
@@ -98,6 +98,10 @@ defmodule Blockchain do
       "00000" -> proof
       _ -> work(last_proof, proof + 1)
     end
+  end
+
+  defp get_chain do
+    Agent.get(__MODULE__, &(&1))
   end
 
   defp hash(block) do
