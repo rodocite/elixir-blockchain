@@ -73,13 +73,17 @@ defmodule Blockchain do
     new_block(proof, nil)
   end
 
-  defp validate_blockchain(chain) do
-    # validate a chain from a different node
-  end
+  def validate_chain(foreign_chain) do
+    chain = get_chain()
+    last_block = chain[:last_block]
+    foreign_last_block = foreign_chain[:last_block]
+    current_index = last_block[:index]
 
-  defp consensus do
-    # reach consensus on which valid chain should be the model
-    # longest ledger in the network wins
+    (current_index === foreign_last_block[:index])
+    |> case do
+      true -> Map.equal?(foreign_last_block, last_block)
+      false -> :ordsets.is_subset(foreign_chain[:chain], chain[:chain])
+    end
   end
 
   defp proof_of_work(last_proof) do
