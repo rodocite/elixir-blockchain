@@ -1,6 +1,7 @@
 Elixir + Blockchains = Fun
 
 TODO
+  - research erlang ordsets to see if they deep compare when members are maps
   - try it out on multiple nodes at high difficulty
   - consensus checking
   - add node to node tansactions
